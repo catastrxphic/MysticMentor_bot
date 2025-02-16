@@ -1,0 +1,23 @@
+{
+  "name": "mysticmentor_bot",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/pg": "^8.11.11"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.4.7",
+    "drizzle-kit": "^0.30.4",
+    "drizzle-orm": "^0.39.3",
+    "pg": "^8.13.3",
+    "pg-pool": "^3.7.1"
+  },
+  "scripts": {
+    "migrate": "drizzle-kit push"
+  }
+}

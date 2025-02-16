@@ -1,0 +1,16 @@
+{
+    "schema": "./db/schema.ts",
+    "dialect": "postgresql",
+    "dbCredentials": {
+      "host": "db.osuqurhkfzzfidearosb.supabase.co",
+      "database": "postgres",
+      "user": "postgres",
+      "password": "DMgamification",
+      "port": 5432
+    },
+    "ssl": {
+    "rejectUnauthorized": false
+    },
+    "out": "./drizzle"
+  }
+  
