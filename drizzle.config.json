@@ -5,7 +5,7 @@
       "host": "db.osuqurhkfzzfidearosb.supabase.co",
       "database": "postgres",
       "user": "postgres",
-      "password": "DMgamification",
+      "password": "camidbgamification",
       "port": 5432
     },
     "ssl": {

@@ -5,7 +5,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   discordId: text("discord_id").notNull().unique(), // Discord User ID
   username: text("username").notNull(),
-  xp: integer("xp").default(0), // Total XP earned
+  xp: integer("xp").default(0).notNull(), // Total XP earned
   coins: integer("coins").default(0), // Coins earned
   badges: text("badges"), // Badges earned, stored as a comma-separated string
   level: integer("level").default(1), // User level based on XP
@@ -15,7 +15,7 @@ export const users = pgTable("users", {
 // Tasks table, tracking tasks and their XP rewards
 export const tasks = pgTable("tasks", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
+  userId: integer("user_id").notNull().references(() => users.id),
   name: text("name").notNull(),
   description: text("description"), // Optional task description
   xpReward: integer("xp_reward").notNull(), // XP rewarded for completing the task
