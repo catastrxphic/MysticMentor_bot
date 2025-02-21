@@ -1,5 +1,5 @@
 {
-  "id": "88e376c4-12a2-454d-be6e-79a32ba9645e",
+  "id": "5b97f7bf-ee96-4072-821f-41ef29fa7386",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -37,7 +37,7 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false,
-          "default": "'2025-02-18T22:20:16.143Z'"
+          "default": "'2025-02-20T16:43:26.686Z'"
         },
         "badge": {
           "name": "badge",
@@ -127,14 +127,14 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false,
-          "default": "'2025-02-18T22:20:16.139Z'"
+          "default": "'2025-02-20T16:43:26.685Z'"
         },
         "updated_at": {
           "name": "updated_at",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
-          "default": "'2025-02-18T22:20:16.143Z'"
+          "default": "'2025-02-20T16:43:26.686Z'"
         }
       },
       "indexes": {},

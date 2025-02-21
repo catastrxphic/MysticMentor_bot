@@ -3,7 +3,7 @@ CREATE TABLE "achievements" (
 	"user_id" integer,
 	"name" text NOT NULL,
 	"description" text,
-	"unlocked_at" text DEFAULT '2025-02-18T22:20:16.143Z',
+	"unlocked_at" text DEFAULT '2025-02-20T16:43:26.686Z',
 	"badge" text
 );
 --> statement-breakpoint
@@ -16,8 +16,8 @@ CREATE TABLE "tasks" (
 	"coins_reward" integer DEFAULT 0,
 	"completed" boolean DEFAULT false,
 	"badge_reward" text,
-	"created_at" text DEFAULT '2025-02-18T22:20:16.139Z',
-	"updated_at" text DEFAULT '2025-02-18T22:20:16.143Z'
+	"created_at" text DEFAULT '2025-02-20T16:43:26.685Z',
+	"updated_at" text DEFAULT '2025-02-20T16:43:26.686Z'
 );
 --> statement-breakpoint
 CREATE TABLE "users" (

@@ -1,4 +1,4 @@
-import { pgTable, serial, text, integer, boolean } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, integer, boolean, bigint } from "drizzle-orm/pg-core";
 
 // Users table, tracking XP, username, and other relevant user data
 export const users = pgTable("users", {
