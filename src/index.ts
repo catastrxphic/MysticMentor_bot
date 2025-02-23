@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { Client, Events, GatewayIntentBits } from "discord.js";
-import { completeTask, getUserTasks, createTask, deleteTask, updateTask, getLeaderboard, getOrCreateUser, updateUserProfile, getUserAchievements, unlockAchievement, updateAchievement, deleteAchievement } from "../db/dbUtils"; 
+import { completeTask, getUserTasks, createTask, deleteTask, updateTask, getLeaderboard, getOrCreateUser, updateUserProfile, getUserAchievements, unlockAchievement, updateAchievement, deleteAchievement, addShopItem, buyItem, getBalance } from "../db/dbUtils"; 
 
 const client = new Client({
     intents: [
@@ -272,7 +272,54 @@ client.on(Events.MessageCreate, async (message) => {
         }
     }
     
+    // Add item to the shop
+    else if (command === "!additem") {
+        const [name, description, xpRequired, coinsRequired] = args.slice(1).join(" ").split("|").map(s => s.trim());
     
+        if (!name || !xpRequired || !coinsRequired) {
+            message.reply("Usage: `!additem <name> | <description> | <xp> | <coins>`");
+            return;
+        }
+    
+        try {
+            const result = await addShopItem(name, description, parseInt(xpRequired), parseInt(coinsRequired));
+            message.reply(result.success || `⚠️ ${result.error}`);
+        } catch (error) {
+            console.error("Error adding shop item:", error);
+            message.reply("Oops! Something went wrong adding the item.");
+        }
+    }
+    
+    // Buy item from the shop
+    else if (command === "!buy") {
+        const itemName = args.slice(1).join(" ");
+    
+        if (!itemName) {
+            message.reply("Usage: `!buy <item name>`");
+            return;
+        }
+    
+        try {
+            const result = await buyItem(message.author.id, itemName);
+            message.reply(result.success || `⚠️ ${result.error}`);
+        } catch (error) {
+            console.error("Error buying item:", error);
+            message.reply("Oops! Something went wrong with your purchase.");
+        }
+    }
+    
+    // Get user's balance
+    else if (command === "!balance") {
+        try {
+            const result = await getBalance(message.author.id);
+            message.reply(result.success || `⚠️ ${result.error}`);
+        } catch (error) {
+            console.error("Error checking balance:", error);
+            message.reply("Oops! Something went wrong checking your balance.");
+        }
+    }
+    
+    // see the leaderboard
     else if (command === "!leaderboard") {
         try {
             const topUsers = await getLeaderboard();

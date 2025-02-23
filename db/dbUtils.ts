@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { users, tasks, achievements } from "./schema";
+import { users, tasks, achievements, shopItems } from "./schema";
 import { and, eq, desc } from "drizzle-orm";
 
 const DEBUG = true;
@@ -252,6 +252,50 @@ export async function deleteAchievement(discordId: string, achievementName: stri
 
   // Return a success message with the achievement name
   return { success: `Achievement "${existingAchievement[0].name}" deleted.` };
+}
+
+// add an item to teh shop
+export async function addShopItem(name: string, description: string, xpRequired: number, coinsRequired: number) {
+  try {
+      await db.insert(shopItems).values({
+          name,
+          description,
+          xpRequired,
+          coinsRequired
+      });
+      return { success: `Item "${name}" added to the shop!` };
+  } catch (error) {
+      console.error("Error adding shop item:", error);
+      return { error: "Failed to add item. It may already exist." };
+  }
+}
+
+// buy an item from the shop
+export async function buyItem(discordId: string, itemName: string) {
+    const user = await db.select().from(users).where(eq(users.discordId, discordId)).limit(1);
+    if (!user.length) return { error: "User not found." };
+
+    const item = await db.select().from(shopItems).where(eq(shopItems.name, itemName)).limit(1);
+    if (!item.length) return { error: "Item not found in the shop." };
+
+    if (user[0].coins < item[0].coinsRequired) {
+        return { error: `Not enough coins! You need ${item[0].coinsRequired} coins to buy this item.` };
+    }
+
+    // Deduct coins and confirm purchase
+    await db.update(users)
+        .set({ coins: user[0].coins - item[0].coinsRequired })
+        .where(eq(users.discordId, discordId));
+
+    return { success: `You purchased "${item[0].name}" for ${item[0].coinsRequired} coins!` };
+}
+
+// check one's balance
+export async function getBalance(discordId: string) {
+  const user = await db.select().from(users).where(eq(users.discordId, discordId)).limit(1);
+  if (!user.length) return { error: "User not found." };
+
+  return { success: `Your balance: 💰 ${user[0].coins} coins` };
 }
 
 
