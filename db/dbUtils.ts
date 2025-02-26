@@ -55,7 +55,7 @@ export async function createTask(
   name: string,
   description: string,
   xpReward: number,
-  coinsReward: number = 0,
+  coinsReward: number,
   badgeReward?: string
 ) {
   const user = await db.select({ id: users.id }).from(users).where(eq(users.discordId, discordId)).limit(1);

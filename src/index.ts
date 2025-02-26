@@ -176,34 +176,37 @@ client.on(Events.MessageCreate, async (message) => {
         const args = message.content.match(/"([^"]+)"|(\S+)/g);
         console.log("Parsed arguments:", args); 
     
-        if (!args || args.length < 4) {
-            message.reply("Usage: `!createtask \"<name>\" \"<description>\" <xpReward>`");
+        if (!args || args.length < 5) {  
+            message.reply("Usage: `!createtask \"<name>\" \"<description>\" <xpReward> <coinReward>`");
             return;
         }
     
         args.shift(); 
     
-        const name = args[0].replace(/"/g, ""); 
-        const description = args.slice(1, -1).join(" ").replace(/"/g, ""); 
-        const xpRewardStr = args[args.length - 1].replace(/"/g, "").trim(); 
+        const name = args[0].replace(/"/g, "");  // Extracts full task name
+        const description = args[1].replace(/"/g, "");  // Extracts full description
+        const xpRewardStr = args[2].replace(/"/g, "").trim(); 
+        const coinRewardStr = args[3].replace(/"/g, "").trim(); 
     
-        console.log("Extracted values -> Name:", name, "| Description:", description, "| XP String:", xpRewardStr); 
+        console.log("Extracted values -> Name:", name, "| Description:", description, "| XP String:", xpRewardStr, "| Coin String:", coinRewardStr); 
     
         const xpReward = parseInt(xpRewardStr, 10);
+        const coinReward = parseInt(coinRewardStr, 10);
     
-        if (isNaN(xpReward)) {
-            message.reply("Error: XP reward must be a number.");
+        if (isNaN(xpReward) || isNaN(coinReward)) {
+            message.reply("Error: XP reward and Coin reward must be numbers.");
             return;
         }
     
         try {
-            const newTask = await createTask(message.author.id, name, description, xpReward);
-            message.reply(`✅ Task created: "${newTask.name}" (${newTask.xpReward} XP)`);
+            const newTask = await createTask(message.author.id, name, description, xpReward, coinReward);
+            message.reply(`✅ Task created: "${newTask.name}" - ${newTask.description} (${newTask.xpReward} XP, ${newTask.coinsReward} Coins)`);
         } catch (error) {
             console.error("Error creating task:", error);
             message.reply("Oops! Something went wrong creating the task.");
         }
-    }
+    }       
+
     
     else if (command === "!updatetask") {
         const args = message.content.split(" ");
@@ -257,20 +260,43 @@ client.on(Events.MessageCreate, async (message) => {
     }
 
     else if (command === "!deletetask") {
-        const taskId = parseInt(args[1], 10);
-        if (isNaN(taskId)) {
-            message.reply("Usage: `!deletetask <taskID>`");
+        const taskTitle = args.slice(1).join(" ").trim();
+        
+        if (!taskTitle) {
+            message.reply("Usage: !deletetask <task title>");
             return;
         }
-    
+        
         try {
-            const result = await deleteTask(message.author.id, taskId);
-            message.reply(result.success || `⚠️ ${result.error}`);
+            const tasksList = await getUserTasks(message.author.id);
+            
+            // Check if tasksList is an error object
+            if ('error' in tasksList) {
+                message.reply(`⚠️ ${tasksList.error}`);
+                return;
+            }
+            
+            // Ensure tasksList is an array of tasks
+            if (Array.isArray(tasksList)) {
+                const taskToDelete = tasksList.find((task: { name: string }) => task.name.toLowerCase() === taskTitle.toLowerCase());
+                
+                if (!taskToDelete) {
+                    message.reply(`⚠️ No task found with the name "${taskTitle}".`);
+                    return;
+                }
+    
+                // Proceed with task deletion
+                const result = await deleteTask(message.author.id, taskToDelete.id); // Assuming deleteTask requires task ID
+                message.reply(result.success || `⚠️ ${result.error}`);
+            } else {
+                message.reply("⚠️ Unexpected response format while retrieving tasks.");
+            }
         } catch (error) {
             console.error("Error deleting task:", error);
             message.reply("Oops! Something went wrong deleting the task.");
         }
-    }
+    }    
+    
     
     // Add item to the shop
     else if (command === "!additem") {
